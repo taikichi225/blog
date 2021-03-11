@@ -1,5 +1,5 @@
 +++
-title = "テックブログ"
-author = "taiki.kono"
+title = "会社のテックブログ"
+author = "会社名"
 description = "テックブログです"
 +++
