@@ -9,10 +9,10 @@
     <lastBuildDate>Mon, 11 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://taikichi225.github.io/blog/categories/syntax/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Markdown Syntax Guide</title>
-      <link>https://taikichi225.github.io/blog/post/markdown-syntax/</link>
+      <link>https://taikichi225.github.io/blog/posts/markdown-syntax/</link>
       <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://taikichi225.github.io/blog/post/markdown-syntax/</guid>
+      <guid>https://taikichi225.github.io/blog/posts/markdown-syntax/</guid>
       <description>
         
           &lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p&gt;

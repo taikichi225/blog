@@ -8,6 +8,8 @@ canonifyurls = true
 paginate = 10
 theme = "hugo-clarity"
 
+publishDir = "docs"
+
 disqusShortname = ""
 
 DefaultContentLanguage = "en"
@@ -74,7 +76,7 @@ codeLineNumbers = false
 enableMathNotation = false
 
 # directory(s) where your articles are located
-mainSections = ["post"] # see config details here https://gohugo.io/functions/where/#mainsections
+mainSections = ["posts"] # see config details here https://gohugo.io/functions/where/#mainsections
 
 # center logo on navbar
 centerLogo = false # Set to "true" for centering or "false" for left aligned.
@@ -124,5 +126,3 @@ enforceLightMode = false
 # notice of the footer.
 # since = 2016
 
-# The directory that will be published in Github Pages.
-publishDir = "docs"
