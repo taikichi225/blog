@@ -39,7 +39,6 @@ series = "series"
 author = "会社名"
 twitter = "会社のTwitterアカウント"
 largeTwitterCard = false # set to true if you want to show a large twitter card image. The default is a small twitter card image
-images = ["logos/logo.png"]
 introDescription = "会社の説明"
 introURL = "https://www.google.com/" # set the url for the 'read more' button below the introDescription, or set to false to not show the button
 # description = "" # set your site's description here. will be use for home page content meta tags (seo). Alternatively set this description in your homepage content file i.e content/_index.md. Whatever is set in the latter will take precedence
@@ -67,6 +66,8 @@ centerLogo = false # Set to "true" for centering or "false" for left aligned.
 
 logo = "logos/logo.png"
 
+shareImage = "logos/logo.png"
+
 # Label Non inline images on an article body
 figurePositionShow = false # toggle on or off globally
 # you can toggle this behaviour on or off on per page using the same variable inside your articles frontmatter
@@ -75,4 +76,4 @@ figurePositionLabel = "Figure" # the text before image number e.g Figure 1.0
 # Set the collapsed mobile navigation to either appear from the left or the right
 mobileNavigation = "left" # if you prefer right change to 'right'
 
-enforceLightMode = false
+enforceLightMode = true
