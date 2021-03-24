@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>codemagic on 会社</title><link>https://taikichi225.github.io/blog/tags/codemagic/</link><description>Recent content in codemagic on 会社</description><generator>Hugo -- gohugo.io</generator><copyright>Copyright (C) 2021 会社名, Inc. All Rights Reserved.</copyright><lastBuildDate>Mon, 01 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://taikichi225.github.io/blog/tags/codemagic/index.xml" rel="self" type="application/rss+xml"/><item><title>テストページ</title><link>https://taikichi225.github.io/blog/posts/test/</link><pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate><guid>https://taikichi225.github.io/blog/posts/test/</guid><description>
+&lt;p>テストページです。昔の記事を掘り起こして書いています。
+test page&lt;/p>
+&lt;hr>
+&lt;h1 id="はじめに">はじめに&lt;/h1>
+&lt;p>本記事は、&lt;a href="https://flutter-jp.connpass.com/event/126419/">Flutter Meetup Tokyo #9&lt;/a>でLTで話した内容に多少の追記を加えたものとなります。
+LTスライドは&lt;a href="https://speakerdeck.com/taikichi225/flutter-for-webdegou-zhu-sitaapuriwocodemagic-plus-github-pagesdepei-xin-suru">こちら&lt;/a>にあります。&lt;/p>
+&lt;h1 id="flutter-for-webの発表">Flutter for Webの発表&lt;/h1>
+&lt;p>先日のGoogle I/O 2019でFlutter for Webのテクニカルプレビュー版が発表されました。Flutterは、Android/iOSだけでなく、Webアプリとしてブラウザで動かせるようになります。
+ということで、Flutter for Webがどのようなものか早速触ってみました。&lt;/p>
+&lt;h1 id="構成">構成&lt;/h1>
+&lt;p>今回は、以下の構成で検証しました。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/0add3df9-6176-60d9-0865-c2d1cca7c2c3.png" alt="image.png">&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名前&lt;/th>
+&lt;th>概要&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Flutter for Web&lt;/td>
+&lt;td>Flutter for Webは、FlutterをWebアプリとして生成する機能です。DartのコードをJavaScriptにコンパイルします。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Codemagic&lt;/td>
+&lt;td>Flutterに特化した無料CI/CDツールです。リポジトリからソースコード取得・テスト実行・ビルド・GitHub Pagesへのデプロイを担当します。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GitHub Pages&lt;/td>
+&lt;td>GitHubの提供する静的コンテンツのホスティングサービスです。GitHubのアカウントがあれば、無料で静的サイトが公開できます。Flutter for Webで構築したアプリを配信します。&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="構築手順">構築手順&lt;/h1>
+&lt;ol>
+&lt;li>Flutter for Webの導入&lt;/li>
+&lt;li>Github Pagesの準備&lt;/li>
+&lt;li>Codemagicの設定&lt;/li>
+&lt;/ol>
+&lt;h1 id="flutter-for-webの導入">Flutter for Webの導入&lt;/h1>
+&lt;h2 id="1-flutter-for-webのソースコードのダウンロード">1. Flutter for Webのソースコードのダウンロード&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>git clone https://github.com/flutter/flutter_web.git
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="2ビルドツールのインストール">2.ビルドツールのインストール&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>flutter pub global activate webdev
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="3サンプルによる動作確認">3.サンプルによる動作確認&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>&lt;span class="nb">cd&lt;/span> examples/hello_world/
+&lt;span class="ln">2&lt;/span>flutter packages upgrade
+&lt;span class="ln">3&lt;/span>flutter pub global activate webdev serve
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="4既存flutterプロジェクトのマイグレーション">4.既存Flutterプロジェクトのマイグレーション&lt;/h2>
+&lt;p>Flutterのゴールは、単一コードベースでモバイルとWebに対応したアプリケーションの構築です。しかし、今回発表されたテクニカルプレビュー版は、Flutter for Webに対応するために既存のFlutterコードを修正する必要があります。
+&lt;a href="https://github.com/flutter/flutter_web/blob/master/docs/migration_guide.md">ドキュメント&lt;/a>を参考に修正します。大まかな手順は以下の3つです。&lt;/p>
+&lt;ol>
+&lt;li>pubspec.yamlの修正&lt;/li>
+&lt;li>ソースコード内のimport文修正&lt;/li>
+&lt;li>webディレクトリの追加&lt;/li>
+&lt;/ol>
+&lt;h2 id="5githubにソースコード管理用リポジトリの作成">5.GitHubにソースコード管理用リポジトリの作成&lt;/h2>
+&lt;p>「flutter_web_demo」と名付けました。
+この後作成するGitHub Pages用リポジトリとは別のものです。&lt;/p>
+&lt;h2 id="6ソースコードのプッシュ">6.ソースコードのプッシュ&lt;/h2>
+&lt;h1 id="github-pagesの準備">Github Pagesの準備&lt;/h1>
+&lt;h2 id="1アプリ公開用リポジトリの作成">1.アプリ公開用リポジトリの作成&lt;/h2>
+&lt;p>リポジトリ名に「ユーザ名.github.io」、リポジトリの種類に「Public」設定し、リポジトリを作成します。
+私の場合は、「taikichi225.github.io」というリポジトリ名です。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/49923d47-6dab-ac82-4948-acf550b1bc99.png" alt="image.png">&lt;/p>
+&lt;h2 id="2github-pages用リポジトリのクローン">2.GitHub Pages用リポジトリのクローン&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>git clone https://github.com/taikichi225/taikichi225.github.io.git
+&lt;span class="ln">2&lt;/span>&lt;span class="nb">cd&lt;/span> taikichi225.github.io
+&lt;span class="ln">3&lt;/span>&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Hello World&amp;#34;&lt;/span> &amp;gt; index.html
+&lt;span class="ln">4&lt;/span>git add .
+&lt;span class="ln">5&lt;/span>git commit -m &lt;span class="s2">&amp;#34;first commit&amp;#34;&lt;/span>
+&lt;span class="ln">6&lt;/span>git push origin master
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="3動作検証">3.動作検証&lt;/h2>
+&lt;p>以下にアクセスする。
+&lt;a href="https://taikichi225.github.io/index.html">https://taikichi225.github.io/index.html&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/1f2f8f6a-bc8d-3ebb-522f-1abe77e83f94.png" alt="image.png">&lt;/p>
+&lt;h1 id="codemagicの設定">Codemagicの設定&lt;/h1>
+&lt;h2 id="1codemagicのサインアップ">1.Codemagicのサインアップ&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/1df11480-137a-6ba6-1014-7517dfea72a4.png" alt="image.png">&lt;/p>
+&lt;h2 id="2githubアカウントでログイン">2.GitHubアカウントでログイン&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/0eb47b5c-6938-e2e0-9f90-4b3178a981ef.png" alt="image.png">&lt;/p>
+&lt;h2 id="3ソースコード管理用リポジトリの確認">3.ソースコード管理用リポジトリの確認&lt;/h2>
+&lt;p>先ほどプッシュしたアプリのプロジェクトが確認できます。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/8af8463a-2d78-2852-8f57-957b196dd75f.png" alt="image.png">&lt;/p>
+&lt;h2 id="4ワークフローの設定">4.ワークフローの設定&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/5dc62134-39d3-64d0-00de-8a184a958132.png" alt="image.png">&lt;/p>
+&lt;h2 id="5post-build-scriptに以下のスクリプト追加">5.Post-build scriptに以下のスクリプト追加&lt;/h2>
+&lt;p>GitへのデプロイはCodemagicが対応しておらず、スクリプトを書きました。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln"> 1&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="nb">set&lt;/span> -ex
+&lt;span class="ln"> 4&lt;/span>
+&lt;span class="ln"> 5&lt;/span>git config --global user.name &lt;span class="nv">$GIT_USERNAME&lt;/span>
+&lt;span class="ln"> 6&lt;/span>git config --global user.password &lt;span class="nv">$GIT_PASSWORD&lt;/span>
+&lt;span class="ln"> 7&lt;/span>git config --global user.email &lt;span class="nv">$GIT_EMAIL&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>git clone https://github.com/taikichi225/taikichi225.github.io.git
+&lt;span class="ln">10&lt;/span>
+&lt;span class="ln">11&lt;/span>rm -rf taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>
+&lt;span class="ln">12&lt;/span>mkdir taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>
+&lt;span class="ln">13&lt;/span>cp -r &lt;span class="nv">$FCI_BUILD_DIR&lt;/span>/build/ taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>/
+&lt;span class="ln">14&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="nb">cd&lt;/span> taikichi225.github.io
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>git remote set-url origin &lt;span class="se">\
+&lt;/span>&lt;span class="ln">18&lt;/span>&lt;span class="se">&lt;/span>&lt;span class="s2">&amp;#34;https://&lt;/span>&lt;span class="nv">$GIT_USERNAME&lt;/span>&lt;span class="s2">:&lt;/span>&lt;span class="nv">$GIT_PASSWORD&lt;/span>&lt;span class="s2">@github.com/taikichi225/taikichi225.github.io.git&amp;#34;&lt;/span>
+&lt;span class="ln">19&lt;/span>
+&lt;span class="ln">20&lt;/span>git add .
+&lt;span class="ln">21&lt;/span>git commit -m &lt;span class="s2">&amp;#34;deploy&amp;#34;&lt;/span>
+&lt;span class="ln">22&lt;/span>git push origin master
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="動作確認">動作確認&lt;/h1>
+&lt;p>&lt;a href="https://taikichi225.github.io/flutter_web_demo/index.html">https://taikichi225.github.io/flutter_web_demo/index.html&lt;/a>&lt;/p>
+&lt;h1 id="所感">所感&lt;/h1>
+&lt;p>全体的に～～～&lt;/p>
+&lt;h2 id="flutter-for-web">Flutter for Web&lt;/h2>
+&lt;ul>
+&lt;li>テクニカルプレビュー版ゆえ、コードを多少修正したが、モバイル用に書いてきたコードがそのままWebで動いた。思っていた以上にさくさく描画してくれる。&lt;/li>
+&lt;li>テクニカルプレビュー版でも未来を感じる。誰もが夢見たクロスプラットフォーム。
+&lt;ul>
+&lt;li>Flutter×DartだけでWebアプリを構築できるならば、CSS調整コストや変化の速すぎるJavaScriptのキャッチアップなど、Webアプリ構築関連の悩みを解決する一手になるのでは。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>デザイナーとの協業はどうするか？
+&lt;ul>
+&lt;li>Flutter for Webに限った話ではないが、デザイナーはDartでコーディングするの？それとも画面モックだけ作成で実際の構築はエンジニア？&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="codemagic">Codemagic&lt;/h2>
+&lt;ul>
+&lt;li>GUIで簡単にフローを設定できる。
+&lt;ul>
+&lt;li>FlutterアプリをGoogle PlayやApp Storeにデプロイするには便利そう。&lt;/li>
+&lt;li>ビルド結果をSlackやメールへの通知を簡単に設定できる。&lt;/li>
+&lt;li>一方で、プラグインが用意されていないため、通常とは異なる処理を含めたい場合、スクリプトをごりごり書くことになる。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>想定以上にビルドに時間がかかる。&lt;/li>
+&lt;/ul>
+&lt;h2 id="github-pages">GitHub Pages&lt;/h2>
+&lt;ul>
+&lt;li>Gitの操作だけでコンテンツをホスティングできる。
+&lt;ul>
+&lt;li>新しく覚えることが少なく、技術的にも気持ち的にもだいぶ楽。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>今回設定していないが、独自ドメイン・HTTPS対応している。&lt;/li>
+&lt;/ul>
+&lt;h1 id="その他">その他&lt;/h1>
+&lt;p>今回のデモアプリ
+&lt;a href="https://taikichi225.github.io/flutter_web_demo/index.html">https://taikichi225.github.io/flutter_web_demo/index.html&lt;/a>
+ホスティング用リポジトリ
+&lt;a href="https://github.com/taikichi225/taikichi225.github.io.git">https://github.com/taikichi225/taikichi225.github.io.git&lt;/a>
+アプリのリポジトリ
+&lt;a href="https://github.com/taikichi225/flutter_web_demo.git">https://github.com/taikichi225/flutter_web_demo.git&lt;/a>&lt;/p>
+&lt;p>&lt;img src="../../images/internet_heiwa.png" alt="test">&lt;/p></description></item><item><title>テストページ</title><link>https://taikichi225.github.io/blog/posts/test2/</link><pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate><guid>https://taikichi225.github.io/blog/posts/test2/</guid><description>
+&lt;p>テストページです。昔の記事を掘り起こして書いています。
+test page&lt;/p>
+&lt;hr>
+&lt;h1 id="はじめに">はじめに&lt;/h1>
+&lt;p>本記事は、&lt;a href="https://flutter-jp.connpass.com/event/126419/">Flutter Meetup Tokyo #9&lt;/a>でLTで話した内容に多少の追記を加えたものとなります。
+LTスライドは&lt;a href="https://speakerdeck.com/taikichi225/flutter-for-webdegou-zhu-sitaapuriwocodemagic-plus-github-pagesdepei-xin-suru">こちら&lt;/a>にあります。&lt;/p>
+&lt;h1 id="flutter-for-webの発表">Flutter for Webの発表&lt;/h1>
+&lt;p>先日のGoogle I/O 2019でFlutter for Webのテクニカルプレビュー版が発表されました。Flutterは、Android/iOSだけでなく、Webアプリとしてブラウザで動かせるようになります。
+ということで、Flutter for Webがどのようなものか早速触ってみました。&lt;/p>
+&lt;h1 id="構成">構成&lt;/h1>
+&lt;p>今回は、以下の構成で検証しました。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/0add3df9-6176-60d9-0865-c2d1cca7c2c3.png" alt="image.png">&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>名前&lt;/th>
+&lt;th>概要&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Flutter for Web&lt;/td>
+&lt;td>Flutter for Webは、FlutterをWebアプリとして生成する機能です。DartのコードをJavaScriptにコンパイルします。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Codemagic&lt;/td>
+&lt;td>Flutterに特化した無料CI/CDツールです。リポジトリからソースコード取得・テスト実行・ビルド・GitHub Pagesへのデプロイを担当します。&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>GitHub Pages&lt;/td>
+&lt;td>GitHubの提供する静的コンテンツのホスティングサービスです。GitHubのアカウントがあれば、無料で静的サイトが公開できます。Flutter for Webで構築したアプリを配信します。&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h1 id="構築手順">構築手順&lt;/h1>
+&lt;ol>
+&lt;li>Flutter for Webの導入&lt;/li>
+&lt;li>Github Pagesの準備&lt;/li>
+&lt;li>Codemagicの設定&lt;/li>
+&lt;/ol>
+&lt;h1 id="flutter-for-webの導入">Flutter for Webの導入&lt;/h1>
+&lt;h2 id="1-flutter-for-webのソースコードのダウンロード">1. Flutter for Webのソースコードのダウンロード&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>git clone https://github.com/flutter/flutter_web.git
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="2ビルドツールのインストール">2.ビルドツールのインストール&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>flutter pub global activate webdev
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="3サンプルによる動作確認">3.サンプルによる動作確認&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>&lt;span class="nb">cd&lt;/span> examples/hello_world/
+&lt;span class="ln">2&lt;/span>flutter packages upgrade
+&lt;span class="ln">3&lt;/span>flutter pub global activate webdev serve
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="4既存flutterプロジェクトのマイグレーション">4.既存Flutterプロジェクトのマイグレーション&lt;/h2>
+&lt;p>Flutterのゴールは、単一コードベースでモバイルとWebに対応したアプリケーションの構築です。しかし、今回発表されたテクニカルプレビュー版は、Flutter for Webに対応するために既存のFlutterコードを修正する必要があります。
+&lt;a href="https://github.com/flutter/flutter_web/blob/master/docs/migration_guide.md">ドキュメント&lt;/a>を参考に修正します。大まかな手順は以下の3つです。&lt;/p>
+&lt;ol>
+&lt;li>pubspec.yamlの修正&lt;/li>
+&lt;li>ソースコード内のimport文修正&lt;/li>
+&lt;li>webディレクトリの追加&lt;/li>
+&lt;/ol>
+&lt;h2 id="5githubにソースコード管理用リポジトリの作成">5.GitHubにソースコード管理用リポジトリの作成&lt;/h2>
+&lt;p>「flutter_web_demo」と名付けました。
+この後作成するGitHub Pages用リポジトリとは別のものです。&lt;/p>
+&lt;h2 id="6ソースコードのプッシュ">6.ソースコードのプッシュ&lt;/h2>
+&lt;h1 id="github-pagesの準備">Github Pagesの準備&lt;/h1>
+&lt;h2 id="1アプリ公開用リポジトリの作成">1.アプリ公開用リポジトリの作成&lt;/h2>
+&lt;p>リポジトリ名に「ユーザ名.github.io」、リポジトリの種類に「Public」設定し、リポジトリを作成します。
+私の場合は、「taikichi225.github.io」というリポジトリ名です。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/49923d47-6dab-ac82-4948-acf550b1bc99.png" alt="image.png">&lt;/p>
+&lt;h2 id="2github-pages用リポジトリのクローン">2.GitHub Pages用リポジトリのクローン&lt;/h2>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln">1&lt;/span>git clone https://github.com/taikichi225/taikichi225.github.io.git
+&lt;span class="ln">2&lt;/span>&lt;span class="nb">cd&lt;/span> taikichi225.github.io
+&lt;span class="ln">3&lt;/span>&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;Hello World&amp;#34;&lt;/span> &amp;gt; index.html
+&lt;span class="ln">4&lt;/span>git add .
+&lt;span class="ln">5&lt;/span>git commit -m &lt;span class="s2">&amp;#34;first commit&amp;#34;&lt;/span>
+&lt;span class="ln">6&lt;/span>git push origin master
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="3動作検証">3.動作検証&lt;/h2>
+&lt;p>以下にアクセスする。
+&lt;a href="https://taikichi225.github.io/index.html">https://taikichi225.github.io/index.html&lt;/a>&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/1f2f8f6a-bc8d-3ebb-522f-1abe77e83f94.png" alt="image.png">&lt;/p>
+&lt;h1 id="codemagicの設定">Codemagicの設定&lt;/h1>
+&lt;h2 id="1codemagicのサインアップ">1.Codemagicのサインアップ&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/1df11480-137a-6ba6-1014-7517dfea72a4.png" alt="image.png">&lt;/p>
+&lt;h2 id="2githubアカウントでログイン">2.GitHubアカウントでログイン&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/0eb47b5c-6938-e2e0-9f90-4b3178a981ef.png" alt="image.png">&lt;/p>
+&lt;h2 id="3ソースコード管理用リポジトリの確認">3.ソースコード管理用リポジトリの確認&lt;/h2>
+&lt;p>先ほどプッシュしたアプリのプロジェクトが確認できます。&lt;/p>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/8af8463a-2d78-2852-8f57-957b196dd75f.png" alt="image.png">&lt;/p>
+&lt;h2 id="4ワークフローの設定">4.ワークフローの設定&lt;/h2>
+&lt;p>&lt;img src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/155589/5dc62134-39d3-64d0-00de-8a184a958132.png" alt="image.png">&lt;/p>
+&lt;h2 id="5post-build-scriptに以下のスクリプト追加">5.Post-build scriptに以下のスクリプト追加&lt;/h2>
+&lt;p>GitへのデプロイはCodemagicが対応しておらず、スクリプトを書きました。&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="ln"> 1&lt;/span>
+&lt;span class="ln"> 2&lt;/span>&lt;span class="c1">#!/bin/bash&lt;/span>
+&lt;span class="ln"> 3&lt;/span>&lt;span class="nb">set&lt;/span> -ex
+&lt;span class="ln"> 4&lt;/span>
+&lt;span class="ln"> 5&lt;/span>git config --global user.name &lt;span class="nv">$GIT_USERNAME&lt;/span>
+&lt;span class="ln"> 6&lt;/span>git config --global user.password &lt;span class="nv">$GIT_PASSWORD&lt;/span>
+&lt;span class="ln"> 7&lt;/span>git config --global user.email &lt;span class="nv">$GIT_EMAIL&lt;/span>
+&lt;span class="ln"> 8&lt;/span>
+&lt;span class="ln"> 9&lt;/span>git clone https://github.com/taikichi225/taikichi225.github.io.git
+&lt;span class="ln">10&lt;/span>
+&lt;span class="ln">11&lt;/span>rm -rf taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>
+&lt;span class="ln">12&lt;/span>mkdir taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>
+&lt;span class="ln">13&lt;/span>cp -r &lt;span class="nv">$FCI_BUILD_DIR&lt;/span>/build/ taikichi225.github.io/&lt;span class="nv">$PROJECT_NAME&lt;/span>/
+&lt;span class="ln">14&lt;/span>
+&lt;span class="ln">15&lt;/span>&lt;span class="nb">cd&lt;/span> taikichi225.github.io
+&lt;span class="ln">16&lt;/span>
+&lt;span class="ln">17&lt;/span>git remote set-url origin &lt;span class="se">\
+&lt;/span>&lt;span class="ln">18&lt;/span>&lt;span class="se">&lt;/span>&lt;span class="s2">&amp;#34;https://&lt;/span>&lt;span class="nv">$GIT_USERNAME&lt;/span>&lt;span class="s2">:&lt;/span>&lt;span class="nv">$GIT_PASSWORD&lt;/span>&lt;span class="s2">@github.com/taikichi225/taikichi225.github.io.git&amp;#34;&lt;/span>
+&lt;span class="ln">19&lt;/span>
+&lt;span class="ln">20&lt;/span>git add .
+&lt;span class="ln">21&lt;/span>git commit -m &lt;span class="s2">&amp;#34;deploy&amp;#34;&lt;/span>
+&lt;span class="ln">22&lt;/span>git push origin master
+&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="動作確認">動作確認&lt;/h1>
+&lt;p>&lt;a href="https://taikichi225.github.io/flutter_web_demo/index.html">https://taikichi225.github.io/flutter_web_demo/index.html&lt;/a>&lt;/p>
+&lt;h1 id="所感">所感&lt;/h1>
+&lt;p>全体的に～～～&lt;/p>
+&lt;h2 id="flutter-for-web">Flutter for Web&lt;/h2>
+&lt;ul>
+&lt;li>テクニカルプレビュー版ゆえ、コードを多少修正したが、モバイル用に書いてきたコードがそのままWebで動いた。思っていた以上にさくさく描画してくれる。&lt;/li>
+&lt;li>テクニカルプレビュー版でも未来を感じる。誰もが夢見たクロスプラットフォーム。
+&lt;ul>
+&lt;li>Flutter×DartだけでWebアプリを構築できるならば、CSS調整コストや変化の速すぎるJavaScriptのキャッチアップなど、Webアプリ構築関連の悩みを解決する一手になるのでは。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>デザイナーとの協業はどうするか？
+&lt;ul>
+&lt;li>Flutter for Webに限った話ではないが、デザイナーはDartでコーディングするの？それとも画面モックだけ作成で実際の構築はエンジニア？&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="codemagic">Codemagic&lt;/h2>
+&lt;ul>
+&lt;li>GUIで簡単にフローを設定できる。
+&lt;ul>
+&lt;li>FlutterアプリをGoogle PlayやApp Storeにデプロイするには便利そう。&lt;/li>
+&lt;li>ビルド結果をSlackやメールへの通知を簡単に設定できる。&lt;/li>
+&lt;li>一方で、プラグインが用意されていないため、通常とは異なる処理を含めたい場合、スクリプトをごりごり書くことになる。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>想定以上にビルドに時間がかかる。&lt;/li>
+&lt;/ul>
+&lt;h2 id="github-pages">GitHub Pages&lt;/h2>
+&lt;ul>
+&lt;li>Gitの操作だけでコンテンツをホスティングできる。
+&lt;ul>
+&lt;li>新しく覚えることが少なく、技術的にも気持ち的にもだいぶ楽。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>今回設定していないが、独自ドメイン・HTTPS対応している。&lt;/li>
+&lt;/ul>
+&lt;h1 id="その他">その他&lt;/h1>
+&lt;p>今回のデモアプリ
+&lt;a href="https://taikichi225.github.io/flutter_web_demo/index.html">https://taikichi225.github.io/flutter_web_demo/index.html&lt;/a>
+ホスティング用リポジトリ
+&lt;a href="https://github.com/taikichi225/taikichi225.github.io.git">https://github.com/taikichi225/taikichi225.github.io.git&lt;/a>
+アプリのリポジトリ
+&lt;a href="https://github.com/taikichi225/flutter_web_demo.git">https://github.com/taikichi225/flutter_web_demo.git&lt;/a>&lt;/p>
+&lt;p>&lt;img src="../../images/internet_heiwa.png" alt="test">&lt;/p></description></item></channel></rss>
